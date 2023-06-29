@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MAD Practical</string>
+    <string name="btn1">FOLLOW</string>
+    <string name="btn2">MESSAGE</string>
+    <string name="btn3">GROUP 1</string>
+    <string name="btn4">GROUP 2</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>
