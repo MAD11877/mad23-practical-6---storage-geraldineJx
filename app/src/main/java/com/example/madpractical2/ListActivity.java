@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-import java.util.Random;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -21,8 +20,6 @@ public class ListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
         Log.v(TITLE, "On Create!");
 
-        createUsers(); //call to make userlist
-
         //Recyclerview
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         MyAdapter myAdapter = new MyAdapter(readList());
@@ -30,29 +27,16 @@ public class ListActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(myAdapter);
     }
-    private void createUsers() {
-        MyDBHandler myDBHandler = new MyDBHandler(this,null,null,0);
-        for (int i = 0; i <= 20; i++) {
-            User user = new User("Name" + randomNum(), "Description" + randomNum()
-                    , null, randomBoolean());
-            myDBHandler.addUsers(user);
-        }
-    }
-    private List<User> readList() {
-        MyDBHandler myDBHandler = new MyDBHandler(this,null,null,0);
-        return myDBHandler.getUsers();
-    }
 
-    //Generate num for name
-    private int randomNum() {
-        Random ran = new Random();
-        int myNumber = ran.nextInt(999999999);
-        return myNumber;
-    }
-    public boolean randomBoolean() {
-        Random rd = new Random(); // creating Random object
-        boolean myBoolean = rd.nextBoolean();
-        return myBoolean;
+    private List<User> readList() {
+        try(MyDBHandler myDBHandler = new MyDBHandler(this, null)) {
+            List<User> users = myDBHandler.getUsers();
+            if(users.isEmpty()){
+                myDBHandler.createUsers(20);
+                users = myDBHandler.getUsers();
+            }
+            return users;
+        }
     }
 }
 

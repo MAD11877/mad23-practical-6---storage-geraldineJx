@@ -12,7 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
     final String TITLE = "Main Activity";
-    User myUser = new User();
+    //User myUser = new User();
+    private MyDBHandler myDBHandler;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
         int myID = myIntent.getExtras().getInt("id");
         Boolean myFollowed = myIntent.getExtras().getBoolean("followed");
 
+        // Initialize the database handler and retrieve the current user from the database
+        myDBHandler = new MyDBHandler(this,null);
+        currentUser =  myDBHandler.getUsersId(myID);
+        Toast.makeText(getApplicationContext(), "Follow"+ currentUser.getFollowed(), Toast.LENGTH_SHORT).show();
+
         //Text to show MAD2435324368(etc)
         TextView numText = findViewById(R.id.textView);
         numText.setText(myName);
@@ -35,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set the text of the follow button based on the "followed" variable
         final Button followButton = findViewById(R.id.button2);
-        if (myUser.getFollowed()) {
+        if (currentUser.getFollowed()) {
             followButton.setText("Unfollow");
         } else {
             followButton.setText("Follow");
@@ -47,19 +54,21 @@ public class MainActivity extends AppCompatActivity {
                 Log.v(TITLE, "Follow button is pressed");
                 if (followButton.getText().equals("Follow")) {
                     followButton.setText("Unfollow");
-                    myUser.setFollowed(true);
+                    currentUser.setFollowed(true);
                     Toast.makeText(getApplicationContext(), "Followed", Toast.LENGTH_SHORT).show();
                 } else {
                     followButton.setText("Follow");
-                    myUser.setFollowed(false);
+                    currentUser.setFollowed(false);
                 }
+                // Update the user in the database
+                myDBHandler.updateUser(currentUser);
             }
         });
 
         // Restore the followed state from savedInstanceState, if available
-        if (savedInstanceState != null) {
-            myUser = (User) savedInstanceState.get("myUser");
-        }
+        //if (savedInstanceState != null) {
+        //    myUser = (User) savedInstanceState.get("myUser");
+        //}
 
         //Message button
         Button messageButton = findViewById(R.id.button3);
@@ -75,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putSerializable("myUser", myUser);
+        savedInstanceState.putSerializable("myUser", currentUser);
         super.onSaveInstanceState(savedInstanceState);
         Log.v(TITLE, "On SaveInstanceState!");
     }

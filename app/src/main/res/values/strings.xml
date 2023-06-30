@@ -4,6 +4,11 @@
     <string name="btn2">MESSAGE</string>
     <string name="btn3">GROUP 1</string>
     <string name="btn4">GROUP 2</string>
+    <string name="loginPageTitle">My Application</string>
+    <string name="loginTitle">Login Page</string>
+    <string name="loginBtn">LOGIN</string>
+    <string name="username">Username:</string>
+    <string name="password">Password:</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
