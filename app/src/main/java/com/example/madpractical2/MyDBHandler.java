@@ -18,8 +18,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_FOLLOWED = "followed";
-
-    public static final String COLUMN_PASSWORD = "password";
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "users.db";
     private static final String TITLE = "MyDBHandler";
@@ -33,8 +31,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 "(" + COLUMN_NAME + " TEXT,"
                 + COLUMN_DESCRIPTION + " TEXT,"
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COLUMN_FOLLOWED + " BOOLEAN,"
-                + COLUMN_PASSWORD + " TEXT" + ")";
+                + COLUMN_FOLLOWED + " BOOLEAN" + ")";
         db.execSQL(CREATE_USERS_TABLE);
     }
 
@@ -50,7 +47,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_DESCRIPTION, user.getDescription());
         values.put(COLUMN_ID, user.getId());
         values.put(COLUMN_FOLLOWED, user.getFollowed());
-        values.put(COLUMN_PASSWORD, user.getPassword());
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(TABLE_USERS, null, values);
         db.close();
@@ -66,9 +62,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 String description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
                 int id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
                 boolean followed = cursor.getInt(cursor.getColumnIndex(COLUMN_FOLLOWED)) == 1;
-                String password = cursor.getString(cursor.getColumnIndex(COLUMN_PASSWORD));
 
-                User user = new User(name, description, id, followed,password);
+                User user = new User(name, description, id, followed);
                 users.add(user);
             } while (cursor.moveToNext());
         }
@@ -86,7 +81,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
         values.put("name", user.getName());
         values.put("description", user.getDescription());
         values.put("followed", user.getFollowed() ? 1 : 0);
-        values.put("name", user.getPassword());
 
         String whereClause = "id = ?";
         String[] whereArgs = {String.valueOf(user.getId())};
@@ -109,9 +103,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
                 String description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
                 int id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
                 boolean followed = cursor.getInt(cursor.getColumnIndex(COLUMN_FOLLOWED)) == 1;
-                String password = cursor.getString(cursor.getColumnIndex(COLUMN_PASSWORD));
 
-                user = new User(name, description, id, followed,password);
+                user = new User(name, description, id, followed);
                 users.add(user);
             } while (cursor.moveToNext());
         }
@@ -126,7 +119,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Log.i(TITLE, "creating " + numOfUsers + " users!");
         for (int i = 0; i < numOfUsers; i++) {
             User user = new User("Name" + randomNum(), "Description" + randomNum()
-                    , null, randomBoolean(),"Passwords"+ randomNum());
+                    , null, randomBoolean());
             addUsers(user);
         }
     }

@@ -1,5 +1,6 @@
 package com.example.madpractical2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,7 +29,8 @@ public class LoginPage extends AppCompatActivity {
         Log.v(TITLE, "On Create!");
 
         // Initialize Firebase Realtime Database reference
-        usersRef = FirebaseDatabase.getInstance().getReference("users");
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://practical-6-1e9c8-default-rtdb.asia-southeast1.firebasedatabase.app");
+        usersRef = database.getReference("Users");
 
         // Initialize views
         EditText editTextUsername = findViewById(R.id.editTextText);
@@ -39,7 +41,6 @@ public class LoginPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String username = String.valueOf(editTextUsername.getText());
-                String password = String.valueOf(editTextPassword.getText());
 
                 // Validate input fields
                 if (TextUtils.isEmpty(username)) {
@@ -47,34 +48,44 @@ public class LoginPage extends AppCompatActivity {
                     return;
                 }
 
-                if (TextUtils.isEmpty(password)) {
+                String passwordString = editTextPassword.getText().toString().trim();
+                if (TextUtils.isEmpty(passwordString)) {
                     Toast.makeText(getApplicationContext(), "Enter password", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                if (!TextUtils.isDigitsOnly(passwordString)) {
+                    Toast.makeText(getApplicationContext(), "Invalid password format", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Long password = Long.valueOf(passwordString);
+
                 // Query the database for the user with the entered email
-                usersRef.orderByChild("username").equalTo(username).addListenerForSingleValueEvent(new ValueEventListener() {
+                usersRef.child("mad").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        boolean userFound = false;
-                        UserLogin user = null;
+                        if (dataSnapshot.exists()) {
+                            String dbusername = dataSnapshot.child("username").getValue(String.class);
+                            Long dbpassword = dataSnapshot.child("password").getValue(Long.class);
 
-                        // Iterate through the snapshot to find the user
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            user = snapshot.getValue(UserLogin.class);
-                            if (user != null && user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                                userFound = true;
-                                break;
+                            if (username != null && password != null && username.equals(dbusername) && password.equals(dbpassword)) {
+                                // Login success
+                                Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
+                                Intent myIntent = new Intent(LoginPage.this, ListActivity.class);
+                                startActivity(myIntent);
+                                finish();
+
+                                // Proceed to the next activity or perform other actions here
+                            } else {
+                                // Login failed
+                                Toast.makeText(getApplicationContext(), "Invalid username or password", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getApplicationContext(), "username: " + dbusername, Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getApplicationContext(), "Password: " + dbpassword, Toast.LENGTH_SHORT).show();
                             }
-                        }
-
-                        if (userFound) {
-                            // Login success
-                            Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
-
-                            // You can proceed to the next activity or perform other actions here
                         } else {
-                            // Login failed
-                            Toast.makeText(getApplicationContext(), "Invalid email or password", Toast.LENGTH_SHORT).show();
+                            // User not found
+                            Toast.makeText(getApplicationContext(), "User not found", Toast.LENGTH_SHORT).show();
                         }
                     }
 

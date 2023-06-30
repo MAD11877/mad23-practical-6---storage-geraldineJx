@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize the database handler and retrieve the current user from the database
         myDBHandler = new MyDBHandler(this,null);
         currentUser =  myDBHandler.getUsersId(myID);
-        Toast.makeText(getApplicationContext(), "Follow"+ currentUser.getFollowed(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Follow"+ currentUser.getFollowed(), Toast.LENGTH_SHORT).show();
 
         //Text to show MAD2435324368(etc)
         TextView numText = findViewById(R.id.textView);

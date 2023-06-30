@@ -10,16 +10,14 @@ public class User implements Serializable {
 
     public Integer id;
     public boolean followed=false;
-    public String password;
 
     public User() {}
 
-    public User(String name, String description, Integer id, Boolean followed,String password) {
+    public User(String name, String description, Integer id, Boolean followed) {
         this.name = name;
         this.description = description;
         this.id = id;
         this.followed = followed;
-        this.password = password;
     }
 
     public String getName() {return name;}
@@ -51,11 +49,5 @@ public class User implements Serializable {
     public void setFollowed(Boolean followed) {
         this.followed = followed;
     }
-    public String getPassword() {
-        return password;
-    }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

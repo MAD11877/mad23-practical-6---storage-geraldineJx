@@ -4,11 +4,11 @@ public class UserLogin {
 
     public String username;
 
-    public String password;
+    public Long password;
 
     public UserLogin() {}
 
-    public UserLogin(String username, String password) {
+    public UserLogin(String username, Long password) {
         this.username = username;
         this.password = password;
     }
@@ -21,11 +21,11 @@ public class UserLogin {
         this.username = username;
     }
 
-    public String getPassword() {
+    public Long getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(Long password) {
         this.password = password;
     }
 }
